@@ -4,7 +4,7 @@ Tutorial utilizado no *hands on* de **Kubernetes**.
 O objetivo é realizar uma instalação básica de kubernetes para
 entender como as peças se encaixam.
 
-#### Pré-requisitos
+### Pré-requisitos
 
 Espera-se que o participante tenha realizado a verificação/configuração
 dos pré-requisitos previamente à sua participação no *Hands On*.
@@ -15,19 +15,22 @@ dos pré-requisitos previamente à sua participação no *Hands On*.
     suficiente.
   * 20GB de disco para as VMs.
   * Interface de rede funcionando.
+
 * Sistema operacional Windows/Linux compatível com VirtualBox.
   * Esse material foi desenvolvido em Windows mas deve funcionar sem
     maiores problemas em Linux.
+
 * [VirtualBox 5.2.8](https://www.virtualbox.org/wiki/Downloads) ou
   superior.
   * Não testei em outras soluções. Pode ser necessário ajustar algum
     detalhe.
+
 * [Vagrant 2.1](https://www.vagrantup.com/) ou superior.
   * O vagrant será utilizado apenas para a geração das máquinas virtuais,
   acelerando o processo de configuração do SO base utilizado nesse laboratório.
-  A configuração do cluster será manual.
+  A configuração dos componentes do kubernetes é manual.
 
-#### Layout
+### Layout
 
 Exemplificando a comunicação de rede entre os componentes do cluster.
 
