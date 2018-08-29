@@ -1,8 +1,9 @@
-# Kubernetes Hands ON
+# Kubernetes On-premise - Hands On
 
 Tutorial utilizado no *hands on* de **Kubernetes**.
-O objetivo é realizar uma instalação básica de kubernetes para
-entender como as peças se encaixam.
+O objetivo é realizar uma instalação básica de kubernetes sem a utilização
+de ferramentas adicionais para a configuração do cluster. A idéia é
+entender como as peças se encaixam na construção de um cluster.
 
 ### Pré-requisitos
 
@@ -28,7 +29,7 @@ dos pré-requisitos previamente à sua participação no *Hands On*.
 * [Vagrant 2.1](https://www.vagrantup.com/) ou superior.
   * O vagrant será utilizado apenas para a geração das máquinas virtuais,
   acelerando o processo de configuração do SO base utilizado nesse laboratório.
-  A configuração dos componentes do kubernetes é manual.
+  A configuração dos componentes do Kubernetes é manual.
 
 ### Layout
 

@@ -1,9 +1,10 @@
 #### [Componentes](https://kubernetes.io/docs/concepts/overview/components/)
 
 ##### Detalhes do cluster
-- [Kubernetes](https://github.com/kubernetes/kubernetes/tree/release-1.11) versão 1.11
-- [ContainerD](https://containerd.io/) versão 1.0.1
-- [ETCD](https://github.com/etcd-io/etcd/tree/v3.3.5) versão 3.3.5
+- [Centos 7 x86_64](http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso)
+- [Kubernetes 1.11.2](https://github.com/kubernetes/kubernetes/releases/tag/v1.11.2)
+- [ContainerD 1.0.1](https://github.com/containerd/containerd/releases/tag/v1.1.3)
+- [Etcd 3.3.5](https://github.com/etcd-io/etcd/tree/v3.3.5)
 
 
 1 - Master
