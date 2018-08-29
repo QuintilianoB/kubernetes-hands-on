@@ -42,10 +42,3 @@ Exemplificando a comunicação de rede entre os componentes do cluster.
 * [Componentes](arquivos/componentes.md)
 * [Vagrant](arquivos/vagrant.md)
 * [Referências](arquivos/referencias.md)
----
-
-Todo material aqui pode ser baixado e modificado à vontade, desde que
-seja respeitado os direitos definidos pelos autores das referências
-utilizadas. Não me resposabilizo pela má útlização, defeito, ou qualquer
-problema causado pela utilização desse material.
-
