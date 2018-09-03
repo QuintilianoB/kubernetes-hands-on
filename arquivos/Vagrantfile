@@ -1,0 +1,39 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+boxes = [
+  {
+    name: "kube-master",
+    mem: 1024,
+    cpu: 1
+  },
+  {
+    name: "kube-node01",
+    mem: 2048,
+    cpu: 2
+  },
+  {
+    name: "kube-node02",
+    mem: 2048,
+    cpu: 2
+  }
+]
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.ssh.username = 'vagrant'
+  config.ssh.password = 'vagrant'
+
+  boxes.each do |box|
+    config.vm.define box[:name] do |srv|
+      srv.vm.hostname = box[:name]
+
+      srv.vm.provider :virtualbox do |vb|
+        vb.memory = box[:mem]
+        vb.cpus = box[:cpu]
+      end
+
+     config.vm.provision "shell", inline: "yum install -y wget vim curl htop tree tmux"
+    end
+  end
+end

@@ -11,7 +11,7 @@ Espera-se que o participante tenha realizado a verificação/configuração
 dos pré-requisitos previamente à sua participação no *Hands On*.
 
 * Computador
-  * 4GB de ram +
+  * 6GB de ram +
   * Se você utiliza o computador no dia-a-dia, seu processador já é
     suficiente.
   * 20GB de disco para as VMs.
