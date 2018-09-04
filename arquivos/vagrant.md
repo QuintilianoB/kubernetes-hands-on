@@ -65,8 +65,7 @@ Senha:  vagrant
 - Node 2: ```ssh vagrant@127.0.0.1 -p 7024```
 
 Caso não funcione, verifique os passos realizados. O próximo passo
-poderá deixar você trancado de fora caso não tenha verificado esse
-acesso.
+poderá causar a perda de acesso aos hosts!!
 
 **Aproveite para desligar as 3 VMs!!**
 
@@ -93,7 +92,7 @@ Após criar a rede local, é necessário mover os três hosts criados
 para a nova rede. Para isso, em cada um dos hosts, com o botão direito
 selecione a opção **Configuração (Settings)** -> **Rede (Network)**:
 
-    ![host_network](host_network.png)
+![host_network](imagens/host_network.png)
 
 - 1 - Configure as seguintes opções:
     - Conectado a (Attached to): Rede Nat (NAT Network)
