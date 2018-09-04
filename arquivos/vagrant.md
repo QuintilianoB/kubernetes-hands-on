@@ -69,7 +69,7 @@ Caso não funcione, verifique os passos realizados. O próximo passo
 poderá deixar você trancado de fora caso não tenha verificado esse
 acesso.
 
-**Aproveite para desligar as 3 VMs!!** `[#f03c15]`
+!Aproveite para desligar as 3 VMs!! `[#f03c15]`
 
 #### Criar rede local!
 
