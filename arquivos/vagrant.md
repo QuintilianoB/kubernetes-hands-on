@@ -62,3 +62,5 @@ A relação de portas:
 O último passo é realizar a criação de uma rede local para permitir
 a conexão direta entre as máquinas virtuais. Isso é feito direto no
 VirtualBox:
+
+- 1 - Selecione a opção Arquivos (Files)
