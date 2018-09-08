@@ -124,7 +124,7 @@ No exemplo, os IPs obtidos são:
 Com a lista de IPs obtidas, o último passo é configurar o redirecionamento
 de portas para os hosts:
 
-- 1 - Novamente no VirtualBox, novamente iremos editar a rede **k8s**.
+- 1 - Novamente no VirtualBox, iremos editar a rede **k8s**.
     Em **Arquivo (File)** -> **Preferências (Preferences)** -> 
     **Rede (Network)** edite a rede k8s e selecione a opção 
     **Redirecionamento de portas (Port Forwarding)**. Remova qualquer

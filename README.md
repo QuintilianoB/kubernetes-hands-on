@@ -41,4 +41,6 @@ Exemplificando a comunicação de rede entre os componentes do cluster.
 ### Índice
 * [Componentes](arquivos/componentes.md)
 * [Vagrant](arquivos/vagrant.md)
+* [Configurando os certificados](certificados.md)
+* [Configurando o Kube Master](kube-master.md)
 * [Referências](arquivos/referencias.md)

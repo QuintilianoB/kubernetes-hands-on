@@ -1,0 +1,46 @@
+[req]
+default_bits       = 2048
+prompt             = yes
+default_md         = sha256
+distinguished_name = dn
+req_extensions     = v3_req
+x509_extensions    = v3_ca
+
+[ dn ]
+C                  = BR
+O                  = hands-on
+CN                 = Kubernetes
+
+[ v3_ca ]
+keyUsage = critical,keyCertSign, cRLSign
+basicConstraints = critical,CA:TRUE
+subjectKeyIdentifier = hash
+
+[ v3_req ]
+keyUsage = critical,digitalSignature, keyEncipherment, nonRepudiation
+extendedKeyUsage = clientAuth, serverAuth
+basicConstraints = critical,CA:FALSE
+subjectKeyIdentifier = hash
+
+[ kubernetes_v3  ]
+keyUsage = critical,digitalSignature, keyEncipherment, nonRepudiation
+extendedKeyUsage = clientAuth, serverAuth
+basicConstraints = critical,CA:FALSE
+subjectKeyIdentifier = hash
+subjectAltName = @kubernetes_alt
+
+[ kubernetes_alt ]
+DNS.1              = k8s.hands-on.com.br
+DNS.2              = kubernetes
+DNS.3              = kubernetes.default
+IP.1               = 127.0.0.1
+IP.2               = <IP_MASTER>
+IP.3               = <IP_NODE_1>
+IP.4               = <IP_NODE_2>
+IP.5               = 10.32.0.1
+
+[ service_v3  ]
+keyUsage = critical,digitalSignature, keyEncipherment, nonRepudiation
+extendedKeyUsage = clientAuth, serverAuth
+basicConstraints = critical,CA:FALSE
+subjectKeyIdentifier = hash

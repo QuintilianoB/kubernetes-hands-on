@@ -31,6 +31,8 @@
     - Recebe as especificações do pod para execução em um determinado nó
     e garante que ele seja executado de acordo.
   - Kube-proxy
+    - Um proxy de rede utilizado para permitir a comunicação entre os serviços e containers 
+    do cluster. É o kube-proxy quem distribui a carga os pods que compõe um serviço.
 
 ---
 Próximo: [Vagrant](vagrant.md)
