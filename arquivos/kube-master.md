@@ -6,7 +6,6 @@ Para ter o kube-master funcionando, precisamos dos seguintes componentes configu
 - Kubeconigs
 - Kube-controller-manager
 - Kube-scheduler
-- Permissões com RBAC
 
 Acesse o servidor master e execute cada passo em sequência. Execute como root!
 
@@ -236,6 +235,35 @@ controller-manager   Unhealthy   Get http://127.0.0.1:10252/healthz: dial tcp 12
 etcd-0               Healthy     {"health":"true"}  
 ```
 
+9 - Configurar permissões
+
+Por último, para permitir que o apiserver converse com os nodes, é necessário criar
+a permissão para tal. Abaixo, segue a regra de criação do clusterole que permite
+a conexão do API-Server à API Kubelet existente nos nodes.
+
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  annotations:
+    rbac.authorization.kubernetes.io/autoupdate: "true"
+  labels:
+    kubernetes.io/bootstrapping: rbac-defaults
+  name: system:kube-apiserver-to-kubelet
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - nodes/proxy
+      - nodes/stats
+      - nodes/log
+      - nodes/spec
+      - nodes/metrics
+    verbs:
+      - "*"
+EOF
+```
 
 #### Kubeconfigs
 
@@ -253,7 +281,7 @@ kubectl config set-cluster hands-on --certificate-authority=ca.pem --embed-certs
     --server=https://127.0.0.1:6443 --kubeconfig=kube-controller-manager.kubeconfig
 
 kubectl config set-credentials system:kube-controller-manager \
-    --client-certificate=kube-controller-manager.pem 
+    --client-certificate=kube-controller-manager.pem \
     --client-key=kube-controller-manager-key.pem --embed-certs=true \
     --kubeconfig=kube-controller-manager.kubeconfig
 
@@ -293,6 +321,60 @@ kubectl config set-context default --cluster=hands-on --user=admin \
 kubectl config use-context default --kubeconfig=admin.kubeconfig
 ```
 
+4 - Configuração para geração de certificados dos nodes de forma automática
+
+**Altere a flag < MASTER IP > para o endereço do seu master.**
+
+```bash
+TOKEN_PUB=$(openssl rand -hex 3)
+TOKEN_SECRET=$(openssl rand -hex 8)
+BOOTSTRAP_TOKEN="${TOKEN_PUB}.${TOKEN_SECRET}"
+
+kubectl config set-cluster hands-on --certificate-authority=ca.pem --embed-certs=true \
+    --server=https://< MASTER IP >:6443 --kubeconfig=bootstrap.kubeconfig
+
+kubectl config set-context kubelet-bootstrap@hands-on --cluster=hands-on --user=kubelet-bootstrap \
+    --kubeconfig=bootstrap.kubeconfig
+
+kubectl config use-context kubelet-bootstrap@hands-on --kubeconfig=bootstrap.kubeconfig
+
+kubectl config set-credentials kubelet-bootstrap --token=${BOOTSTRAP_TOKEN} --kubeconfig=bootstrap.kubeconfig
+
+kubectl -n kube-system create secret generic bootstrap-token-${TOKEN_PUB} --type 'bootstrap.kubernetes.io/token' \
+        --from-literal description="cluster bootstrap token" --from-literal token-id=${TOKEN_PUB} \
+        --from-literal token-secret=${TOKEN_SECRET} --from-literal usage-bootstrap-authentication=true \
+        --from-literal usage-bootstrap-signing=true
+        
+kubectl config set-cluster hands-on --certificate-authority=ca.pem \
+    --embed-certs=true --server=https://< MASTER IP >:6443 \
+    --kubeconfig=bootstrap.kubeconfig
+
+kubectl config set-context kubelet-bootstrap@hands-on --cluster=hands-on \
+    --user=kubelet-bootstrap --kubeconfig=bootstrap.kubeconfig
+
+kubectl config use-context kubelet-bootstrap@hands-on --kubeconfig=bootstrap.kubeconfig
+
+kubectl create clusterrolebinding kubelet-bootstrap --clusterrole system:node-bootstrapper \
+    --group system:bootstrappers       
+```
+
+5 - Kubeconfig para o kube-proxy
+
+**Altere a flag < MASTER IP > para o endereço do seu master.**
+
+```bash
+kubectl config set-cluster hands-on --certificate-authority=ca.pem --embed-certs=true \
+    --server=https://< MASTER IP >:6443 --kubeconfig=kube-proxy.kubeconfig
+
+kubectl config set-credentials system:kube-proxy --client-certificate=kube-proxy.pem \
+    --client-key=kube-proxy-key.pem --embed-certs=true --kubeconfig=kube-proxy.kubeconfig
+
+kubectl config set-context default --cluster=hands-on --user=system:kube-proxy \
+    --kubeconfig=kube-proxy.kubeconfig
+
+kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
+```
+
 #### Controller Manager
 
 O controller manager é responsável por manter o estado do cluster à partir do que
@@ -316,13 +398,13 @@ ExecStart=/usr/local/bin/kube-controller-manager \
   --cluster-signing-cert-file=/var/lib/kubernetes/ca.pem \
   --cluster-signing-key-file=/var/lib/kubernetes/ca-key.pem \
   --kubeconfig=/var/lib/kubernetes/kube-controller-manager.kubeconfig \
-  --leader-elect=false \
+  --leader-elect=true \
   --root-ca-file=/var/lib/kubernetes/ca.pem \
   --service-account-private-key-file=/var/lib/kubernetes/service-account-key.pem \
   --service-cluster-ip-range=10.32.0.0/24 \
-  --use-service-account-credentials=true \  
+  --use-service-account-credentials=true \
   --controllers=*,tokencleaner \
-  --feature-gates=RotateKubeletServerCertificate=true \  
+  --feature-gates=RotateKubeletServerCertificate=true \
   --v=2
 Restart=on-failure
 RestartSec=5
@@ -354,8 +436,94 @@ systemctl status kube-controller-manager
 kubectl get componentstatus
 ```
 
-Note que apenas o ETCD está ok mas o api server já responde!
+Note que o controllermanager agora está ativo para o cluster.
 
 ```bash
-  
+NAME                 STATUS      MESSAGE                                                                                     ERROR
+scheduler            Unhealthy   Get http://127.0.0.1:10251/healthz: dial tcp 127.0.0.1:10251: connect: connection refused   
+controller-manager   Healthy     ok                                                                                          
+etcd-0               Healthy     {"health":"true"}  
 ```
+
+#### Scheduler
+
+O scheduler é o responsável por definir quando e onde os pods serão criados no cluster.
+Ele verifica uma sequencia de regras definidas pelo administrador para decidir onde um
+pod específico deve ser executado. Entre as regras verificadas estão:
+
+* Quantidade de recursos necessário
+* Afinidade ou não entre pods
+* Labels
+
+1 - Copiando o arquivo de configuração.
+
+Copie o arquivo kube-scheduler.kubeconfig para **/var/lib/kubernetes/**
+
+2 - Crie o arquivo de configuração dinâmico:
+
+Á partir da versão 1.10 a configuração de alguns componentes estão sendo migradas
+para arquivos do tipo yaml, permitindo a configuração dinâmica do cluster.
+Está no road map do kubernetes a remoção das configurações por flags passadas aos binários.
+
+Crie o arquivo /etc/kubernetes/config/kube-scheduler.yaml
+
+```bash\
+#
+---
+apiVersion: componentconfig/v1alpha1
+kind: KubeSchedulerConfiguration
+clientConnection:
+  kubeconfig: "/var/lib/kubernetes/kube-scheduler.kubeconfig"
+leaderElection:
+  leaderElect: true
+```
+
+3 - Criando o serviço.
+
+rei o arquivo **/etc/systemd/system/kube-scheduler.service** com o conteúdo abaixo.
+
+```bash
+[Unit]
+Description=Kubernetes Scheduler
+Documentation=https://github.com/kubernetes/kubernetes
+
+[Service]
+ExecStart=/usr/local/bin/kube-scheduler \
+  --config=/etc/kubernetes/config/kube-scheduler.yaml \
+  --v=2
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
+4 - Inicie o serviço:
+
+```bash
+systemctl daemon-reload
+systemctl enable kube-scheduler
+systemctl start kube-scheduler
+```
+
+4 - Verifique o estado do serviço:
+
+```bash
+systemctl status kube-scheduler
+```
+
+5 - Verifique o estado do cluster
+```bash
+kubectl get componentstatus
+```
+
+Agora todos os componentes do master devem estar OK.
+
+```bash
+NAME                 STATUS    MESSAGE             ERROR
+controller-manager   Healthy   ok                  
+scheduler            Healthy   ok                  
+etcd-0               Healthy   {"health":"true"} 
+```
+
+Próximo: [Configurando os nodes](nodes.md)

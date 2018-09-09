@@ -43,4 +43,7 @@ Exemplificando a comunicação de rede entre os componentes do cluster.
 * [Vagrant](arquivos/vagrant.md)
 * [Configurando os certificados](certificados.md)
 * [Configurando o Kube Master](kube-master.md)
+* [Configurando os nodes](nodes.md)
+* [Configurando serviços básicos](servicos.md)
+* [Expondo um serviço](publicar.md)
 * [Referências](arquivos/referencias.md)

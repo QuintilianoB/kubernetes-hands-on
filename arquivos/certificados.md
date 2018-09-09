@@ -101,6 +101,21 @@ openssl x509 -req -in kube-proxy-req.pem -CA ca.pem -CAkey ca-key.pem \
     -extfile crt.cnf 
 ```
 
+#### Certificados para a API do Kubelet
+```bash
+openssl genrsa -out kubelet-tls-key.pem 2048
+
+openssl req -new -key kubelet-tls-key.pem -newkey rsa:2048 \
+    -nodes -config crt.cnf -subj '/C=BR/O=hands-on/CN=*.local'\
+    -outform pem -out kubelet-tls-req.pem \
+    -keyout kubelet-tls-req.key
+
+openssl x509 -req -in kubelet-tls-req.pem -CA ca.pem \
+    -CAkey ca-key.pem -CAcreateserial -out kubelet-tls.pem \
+    -days 3650 -extensions service_v3 -extfile crt.cnf
+```
+
+
 Com os certificados gerados, vamos iniciar a configuração do master.
 
 Próximo: [Configurando o Kube Master](kube-master.md) 
