@@ -9,6 +9,23 @@ Para ter o kube-master funcionando, precisamos dos seguintes componentes configu
 
 Acesse o servidor master e execute cada passo em sequência. Execute como root!
 
+#### Hosts
+
+Edite o arquivo /etc/hosts e adicione a referências de todos os integrantes do cluster:
+
+
+´´´bash
+cat /etc/hosts
+
+127.0.0.1       master.local    master
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+10.100.100.4 master.local
+10.100.100.5 node1.local
+10.100.100.6 node2.local
+´´´
+
 #### ETCD
 
 O [ETCD](https://coreos.com/etcd/) é uma solução de banco de dados distribuído, utilizado
