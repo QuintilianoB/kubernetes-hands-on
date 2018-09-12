@@ -28,7 +28,7 @@ kubectl apply -f https://raw.githubusercontent.com/QuintilianoB/kubernetes-hands
 Deve ser criado um pod por node existente. Verifique o estado de cada pod com:
 
 ```bash
-kubecetl get pods -n kube-system
+kubectl get pods -n kube-system
 ```
 
 Com a saída esperada:
