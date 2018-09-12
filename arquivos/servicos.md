@@ -45,7 +45,7 @@ kube-flannel-ds-amd64-mmkzh   1/1       Running   0          45m
 similar à instalação do Flannel, execute:
 
 ```bash
-kubectl apply -f kubectl apply -f https://raw.githubusercontent.com/QuintilianoB/kubernetes-hands-on/master/arquivos/servicos/coredns.yaml
+kubectl apply -f https://raw.githubusercontent.com/QuintilianoB/kubernetes-hands-on/master/arquivos/servicos/coredns.yaml
 ```
 
 Verifique os pods criados:
