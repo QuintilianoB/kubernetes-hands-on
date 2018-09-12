@@ -7,7 +7,7 @@ em nossos nodes.
 1 - Crie o deploy e serviço para o Nginx.
 
 ```bash
-kubectl apply -f kubectl apply -f https://raw.githubusercontent.com/QuintilianoB/kubernetes-hands-on/master/arquivos/servicos/deploy_nginx.yaml
+kubectl apply -f https://raw.githubusercontent.com/QuintilianoB/kubernetes-hands-on/master/arquivos/servicos/deploy_nginx.yaml
 ```
 
 2 - Verifique o que foi criado:
