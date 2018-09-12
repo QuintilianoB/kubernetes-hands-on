@@ -14,7 +14,7 @@ Acesse o servidor master e execute cada passo em sequência. Execute como root!
 Edite o arquivo /etc/hosts e adicione a referências de todos os integrantes do cluster:
 
 
-´´´bash
+```bash
 cat /etc/hosts
 
 127.0.0.1       master.local    master
@@ -24,7 +24,7 @@ cat /etc/hosts
 10.100.100.4 master.local
 10.100.100.5 node1.local
 10.100.100.6 node2.local
-´´´
+```
 
 #### ETCD
 
