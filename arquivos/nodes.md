@@ -8,6 +8,22 @@ Os nodes são compostos dos seguintes serviços:
 
 Os passos aqui devem ser realizados nos dois nodes! Execute como root.
 
+#### Hosts
+
+Edite o arquivo /etc/hosts e adicione a referências de todos os integrantes do cluster:
+
+```bash
+cat /etc/hosts
+
+127.0.0.1       node1.local
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+10.100.100.4 master.local
+10.100.100.5 node1.local
+10.100.100.6 node2.local
+```
+
 #### Instalando
 
 1 - Instalando pacotes adicionais.
